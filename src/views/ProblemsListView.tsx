@@ -1,5 +1,5 @@
 import Problem from "../models/Problem"
-import {Card} from '@mui/material'
+import {Button, Card} from '@mui/material'
 import { db } from "../firebase"
 import { auth } from "../firebase"
 import firebase from "firebase"
@@ -21,30 +21,43 @@ const ProblemCardView = (props:any) => {
     const [isChecked, setIsChecked] = useState<boolean>(props.checked)
     if(isChecked) {
         return (
-            <Card style = {{'margin': '20px', background: 'green'}} onClick = {() => {
-                toggleChecked(false, props.cpid)
-                setIsChecked(false)
-            }}>
+            <Card style = {{'margin': '20px', background: 'green'}}>
                 <h1>{props.title}</h1>
                 <h1>{props.cpid}</h1>
                 <h1>{props.division}</h1>
                 <h1>{props.year}</h1>
                 <h1>{props.contest}</h1>
                 <h1>{props.url}</h1>
+                <Button variant="contained" onClick={() => {
+                    window.location.href = `/problem/${props.cpid}`
+                }}>View</Button>
+                <Button variant="contained" onClick = {() => {
+                    toggleChecked(false, props.cpid)
+                    setIsChecked(false)
+                    }}>
+                        Unmark as Solved
+                </Button>
             </Card>
         )
     } else {
         return (
-            <Card style = {{'margin': '20px', background: 'red'}} onClick = {() => {
-                toggleChecked(true, props.cpid)
-                setIsChecked(true)
-            }}>
+            <Card style = {{'margin': '20px', background: 'red'}}>
                 <h1>{props.title}</h1>
                 <h1>{props.cpid}</h1>
                 <h1>{props.division}</h1>
                 <h1>{props.year}</h1>
                 <h1>{props.contest}</h1>
                 <h1>{props.url}</h1>
+                <Button variant="contained" onClick={() => {
+                    window.location.href = `/problem/${props.cpid}`
+                }}>View</Button>
+                <Button variant="contained" onClick = {() => {
+                    toggleChecked(true, props.cpid)
+                    setIsChecked(true)
+                    }}>
+                        Mark as Solved
+                </Button>
+
             </Card>
         )
     }
