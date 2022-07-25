@@ -24,20 +24,22 @@ const Landing = () => {
             setSolvedProblems(doc.data()?.solved)
             setUserName(doc.data()?.name)
           }
-        })
-        
-        db.collection('problems').get().then(docs => {
+        }).then(() => {
+          db.collection('problems').get().then(docs => {
           docs.forEach(doc => {
             setProblems(arr => [...arr, new Problem(doc.data()?.title, parseInt(doc.id), doc.data()?.division, doc.data()?.year, doc.data()?.contest, doc.data()?.url)])
+            })
           })
+          setCurrentUser(user)
+        }).then(() => {
+          setIsLoading(false)
         })
-        setCurrentUser(user)
       } else {
         setCurrentUser(null)
+        setIsLoading(false)
       }
 
     })
-    setIsLoading(false)
   }, [])
 
   if(isLoading) {
