@@ -1,6 +1,7 @@
 import { Button, Input } from "@mui/material"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { signUpWithEmail } from "../models/Auth"
+import { auth } from "../firebase"
 
 const SignUp = () => {
     const [email, setEmail] = useState("")
@@ -19,24 +20,41 @@ const SignUp = () => {
         setName(e.target.value)
     }
 
-    return (
-        <div>
-            <Input placeholder="Email..." onChange={handleEmailChange}></Input>
-            <Input placeholder="Name..." onChange={handleNameChange}></Input>
-            <Input type="password" placeholder="Password..." onChange={handlePasswordChange}></Input>
-            <Button onClick={
-                () => {
-                    console.log(email, password)
-                    signUpWithEmail(email, password, name)
-                }
-            }>Sign Up</Button>
-            <Button onClick={
-                () => {
-                    window.location.href = "/Login"
-                }
-            }>Already have an account, Login</Button>
-        </div>
-    )
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+
+    useEffect(() => {
+        setIsLoading(true)
+        if(auth.currentUser) {
+            window.location.href = '/'
+        }
+        setIsLoading(false)
+    }, [])
+
+    if(isLoading) {
+        return (
+            <div>
+                <h1>Loading...</h1>
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <Input placeholder="Email..." onChange={handleEmailChange}></Input>
+                <Input placeholder="Name..." onChange={handleNameChange}></Input>
+                <Input type="password" placeholder="Password..." onChange={handlePasswordChange}></Input>
+                <Button onClick={
+                    () => {
+                        signUpWithEmail(email, password, name)
+                    }
+                }>Sign Up</Button>
+                <Button onClick={
+                    () => {
+                        window.location.href = "/Login"
+                    }
+                }>Already have an account, Login</Button>
+            </div>
+        )
+    }
 }
 
 export default SignUp

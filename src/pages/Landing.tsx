@@ -10,17 +10,19 @@ const Landing = () => {
   const [solvedProblems, setSolvedProblems] = useState<any[]>([])
   const [problems, setProblems] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [userName, setUserName] = useState("")
 
   useEffect(() => {
+    setIsLoading(true)
     setSolvedProblems([])
     setProblems([])
+
     auth.onAuthStateChanged(user => {
       if(user) {
-        setCurrentUser(user)
-        db.collection("users").doc(currentUser.uid).get().then(doc => {
+        db.collection("users").doc(user.uid).get().then(doc => {
           if(doc.exists) {
-            console.log(doc.data()?.solved)
             setSolvedProblems(doc.data()?.solved)
+            setUserName(doc.data()?.name)
           }
         })
         
@@ -29,14 +31,14 @@ const Landing = () => {
             setProblems(arr => [...arr, new Problem(doc.data()?.title, parseInt(doc.id), doc.data()?.division, doc.data()?.year, doc.data()?.contest, doc.data()?.url)])
           })
         })
+        setCurrentUser(user)
       } else {
         setCurrentUser(null)
       }
 
     })
-    console.log(currentUser)
     setIsLoading(false)
-  }, [currentUser])
+  }, [])
 
   if(isLoading) {
     return (
@@ -63,14 +65,17 @@ const Landing = () => {
                 USACO Tracker
               </Typography>
               <Button color="inherit" onClick={
-                () => auth.signOut()
+                () => {
+                  auth.signOut()
+                  window.location.reload()
+                }
               }>Log Out</Button>
             </Toolbar>
           </AppBar>
         </Box>
 
 
-        <Typography variant="h1">Hello, {currentUser.displayName}</Typography>
+        <Typography variant="h1">Hello, {userName}</Typography>
 
         <ProblemsListView
         checked = {solvedProblems}
@@ -79,29 +84,29 @@ const Landing = () => {
     )
   } else {
     return (
-      <div>
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                USACO Tracker
-              </Typography>
-              <Button color="inherit" onClick={
-                () => window.location.href = '/Login'
-              }>Log In / Sign Up </Button>
-            </Toolbar>
-          </AppBar>
-        </Box>
-      </div>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              USACO Tracker
+            </Typography>
+            <Button color="inherit" onClick={
+              () => window.location.href = '/Login'
+            }>Log In / Sign Up </Button>
+          </Toolbar>
+        </AppBar>
+        <ProblemsListView
+        problems = {problems}/>
+      </Box>
     )
   }
 }
