@@ -36,7 +36,13 @@ const Landing = () => {
         })
       } else {
         setCurrentUser(null)
-        setIsLoading(false)
+        db.collection('problems').get().then(docs => {
+          docs.forEach(doc => {
+            setProblems(arr => [...arr, new Problem(doc.data()?.title, parseInt(doc.id), doc.data()?.division, doc.data()?.year, doc.data()?.contest, doc.data()?.url)])
+            })
+        }).then(() => {
+          setIsLoading(false)
+        })
       }
 
     })
@@ -80,35 +86,41 @@ const Landing = () => {
         <Typography variant="h1">Hello, {userName}</Typography>
 
         <ProblemsListView
+        isLoggedIn={true}
         checked = {solvedProblems}
         problems = {problems}/>
       </div>
     )
   } else {
     return (
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              USACO Tracker
-            </Typography>
-            <Button color="inherit" onClick={
-              () => window.location.href = '/Login'
-            }>Log In / Sign Up </Button>
-          </Toolbar>
-        </AppBar>
+      <div>
+        <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                USACO Tracker
+              </Typography>
+              <Button color="inherit" onClick={
+                () => window.location.href = '/Login'
+              }>Log In / Sign Up </Button>
+            </Toolbar>
+          </AppBar>
+        </Box>
         <ProblemsListView
+        isLoggedIn = {false}
+        checked = {[]}
         problems = {problems}/>
-      </Box>
+      </div>
+      
     )
   }
 }
