@@ -36,6 +36,7 @@ const Problem = (props:any) => {
         return (
             <div>
                 <span>
+                    <Typography>{isChecked? "Finished":"Not Finished"}</Typography>
                     <Typography variant="h5">{problem.division}</Typography>
                     <Typography variant="h5">{problem.contest}, {problem.year}</Typography>
                     <Typography variant="h2">{problem.title}</Typography>
