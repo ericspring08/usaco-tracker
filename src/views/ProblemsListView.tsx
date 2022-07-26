@@ -22,13 +22,18 @@ const ProblemCardView = (props:any) => {
     if(props.isLoggedIn) {
         if(isChecked) {
             return (
-                <Card style = {{'margin': '20px', background: 'green'}}>
+                <Card style = {{margin: '10px', background: 'green'}}>
                     <h1>{props.title}</h1>
                     <h5>{props.division}</h5>
                     <h5>{props.contest}, {props.year}</h5>
                     <Button variant="contained" onClick={() => {
                         window.location.href = `/problem/${props.cpid}`
                     }}>View</Button>
+                    <Button variant="contained" onClick={
+                        () => {
+                            window.location.href = props.url
+                        }
+                    }>Open in usaco.org</Button>
                     <Button variant="contained" onClick = {() => {
                         toggleChecked(false, props.cpid)
                         setIsChecked(false)
@@ -39,13 +44,18 @@ const ProblemCardView = (props:any) => {
             )
         } else {
             return (
-                <Card style = {{'margin': '20px', background: 'red'}}>
+                <Card style = {{margin: '10px', background: 'red'}}>
                     <h1>{props.title}</h1>
                     <h5>{props.division}</h5>
                     <h5>{props.contest}, {props.year}</h5>
                     <Button variant="contained" onClick={() => {
                         window.location.href = `/problem/${props.cpid}`
                     }}>View</Button>
+                    <Button variant="contained" onClick={
+                        () => {
+                            window.location.href = props.url
+                        }
+                    }>Open in usaco.org</Button>
                     <Button variant="contained" onClick = {() => {
                         toggleChecked(true, props.cpid)
                         setIsChecked(true)
@@ -58,10 +68,15 @@ const ProblemCardView = (props:any) => {
         }
     } else {
         return (
-            <Card style = {{'margin': '20px'}}>
+            <Card style = {{margin: '10px'}}>
                 <h1>{props.title}</h1>
                 <h5>{props.division}</h5>
                 <h5>{props.contest}, {props.year}</h5>
+                <Button variant="contained" onClick={
+                        () => {
+                            window.location.href = props.url
+                        }
+                    }>Open in usaco.org</Button>
                 <Button variant="contained" onClick={() => {
                     window.location.href = `/problem/${props.cpid}`
                 }}>View</Button>

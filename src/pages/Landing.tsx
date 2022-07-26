@@ -66,6 +66,9 @@ const Landing = () => {
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
+                onClick={() => {
+                  
+                }}
               >
                 <MenuIcon />
               </IconButton>

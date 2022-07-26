@@ -1,19 +1,24 @@
 import fetch from "node-fetch";
-import DOMParser from "xmldom";
+import fs from "fs";
+import path from "path";
 
 const url_base = "http://usaco.org/index.php?page=viewproblem2&cpid="
 
-for(var i = 468;i<1238;i++) {
-    const url = `${url_base}${i}`
-    fetch(url).then(function(response) {
-        // When the page is loaded convert it to text
-        return response.text()
-    })
-    .then(function(html) {
-        // Initialize the DOM parser
-        console.log(html)
-    })
-    .catch(function(err) {  
-        console.log('Failed to fetch page: ', err);  
-    });
+fetch(url_base + "")
+
+for(var i = 0;i<2000;i++) {
+    try {
+        const url = `${url_base}${i}`
+        fetch(url).then(res => res.text()).then(body => {
+            fs.writeFile(path.join('problems', ), {flag: "wx"}, body, err => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                //file written successfully
+            })
+        })
+    } catch(e) {
+        console.log(e)
+    }
 }
