@@ -28,7 +28,7 @@ const Problem = (props:any) => {
         }).then(() => {
             setIsLoading(false)
         })
-    }, [params.id])
+    }, [params.id, currentUser])
     
     if(isLoading) {
         return <div>Loading...</div>
