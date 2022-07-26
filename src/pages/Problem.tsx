@@ -12,42 +12,61 @@ const Problem = (props:any) => {
 
     useEffect(() => {
         setIsLoading(true)
-        if(auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(user => {
             if(user) {
-                setCurrentUser(currentUser)
+                setCurrentUser(user)
                 db.collection('users').doc(user.uid).get()
                     .then(doc => {
-                        setIsChecked(doc.data()?.solved.includes(params.id))
+                        return setIsChecked(doc.data()?.solved.includes(parseInt(params.id!)))
                     })
             } else {
-
+                setCurrentUser(null)
             }
-        }))
+        })
         db.collection('problems').doc(params.id).get().then(doc => {
             setProblem(doc.data())
         }).then(() => {
             setIsLoading(false)
         })
-    }, [params.id, currentUser])
+        console.log(currentUser)
+    }, [params.id, currentUser, isChecked])
     
     if(isLoading) {
         return <div>Loading...</div>
     } else if (problem) {
-        return (
-            <div>
-                <span>
-                    <Typography>{isChecked? "Finished":"Not Finished"}</Typography>
-                    <Typography variant="h5">{problem.division}</Typography>
-                    <Typography variant="h5">{problem.contest}, {problem.year}</Typography>
-                    <Typography variant="h2">{problem.title}</Typography>
-                    <Button variant="contained" onClick={
-                        () => {
-                            window.location.href = problem.url
-                        }
-                    }>Open in usaco.org</Button>
-                </span>
-            </div>
-        )
+        if(currentUser) {
+            return (
+                <div>
+                    <span>
+                        <Typography>{isChecked? "Finished":"Not Finished"}</Typography>
+                        <Typography variant="h5">{problem.division}</Typography>
+                        <Typography variant="h5">{problem.contest}, {problem.year}</Typography>
+                        <Typography variant="h2">{problem.title}</Typography>
+                        <Button variant="contained" onClick={
+                            () => {
+                                window.location.href = problem.url
+                            }
+                        }>Open in usaco.org</Button>
+                    </span>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <span>
+                        <Typography variant="h5">{problem.division}</Typography>
+                        <Typography variant="h5">{problem.contest}, {problem.year}</Typography>
+                        <Typography variant="h2">{problem.title}</Typography>
+                        <Button variant="contained" onClick={
+                            () => {
+                                window.location.href = problem.url
+                            }
+                        }>Open in usaco.org</Button>
+                    </span>
+                </div>
+            )
+        }
+        
     } else {
         return (
             <div>
