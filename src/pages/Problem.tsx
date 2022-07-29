@@ -2,13 +2,33 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { auth, db } from "../firebase"
 import { Button, Typography } from "@mui/material"
+import firebase from "firebase"
 
 const Problem = (props:any) => {
     const params = useParams()
     const [problem, setProblem] = useState<any>(null)
+    const [problemId, setProblemId] = useState<number>(0)
     const [isLoading, setIsLoading] = useState(true)
     const [isChecked, setIsChecked] = useState<boolean|null>(null)
     const [currentUser, setCurrentUser] = useState<any>(null)
+
+    const markAsSolved = () => {
+        if (currentUser) {
+            db.collection('users').doc(auth.currentUser?.uid).update({
+                solved: firebase.firestore.FieldValue.arrayUnion(problemId)
+            })
+            setIsChecked(true)
+        }
+    }
+
+    const markAsUnsolved = () => {
+        if (currentUser) {
+            db.collection('users').doc(auth.currentUser?.uid).update({
+                solved: firebase.firestore.FieldValue.arrayRemove(problemId)
+            })
+            setIsChecked(false)
+        }
+    }
 
     useEffect(() => {
         setIsLoading(true)
@@ -25,10 +45,10 @@ const Problem = (props:any) => {
         })
         db.collection('problems').doc(params.id).get().then(doc => {
             setProblem(doc.data())
+            setProblemId(parseInt(params.id!))
         }).then(() => {
             setIsLoading(false)
         })
-        console.log(currentUser)
     }, [params.id, currentUser, isChecked])
     
     if(isLoading) {
@@ -47,6 +67,12 @@ const Problem = (props:any) => {
                                 window.location.href = problem.url
                             }
                         }>Open in usaco.org</Button>
+                        {
+                            isChecked? 
+                                <Button variant="contained" onClick={() => markAsUnsolved()}>Mark as Unsolved</Button>
+                                : 
+                                <Button variant="contained" onClick={() => markAsSolved()}>Mark as solved</Button>
+                        }
                     </span>
                 </div>
             )
